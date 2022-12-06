@@ -28,6 +28,7 @@ library:
   - split
   - parsec
   - vector
+  - text
 
 
 executables:
@@ -35,12 +36,15 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
-    - -threaded
+#    - -threaded
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
     - aoc2022
     - time
+    when:
+    - condition: false
+      other-modules: Paths_aoc2022
 
 tests:
   aoc2022-test:
