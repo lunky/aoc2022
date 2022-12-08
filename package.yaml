@@ -29,6 +29,7 @@ library:
   - parsec
   - vector
   - text
+  - containers
 
 
 executables:
