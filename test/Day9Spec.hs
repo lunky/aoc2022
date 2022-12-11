@@ -25,6 +25,14 @@ spec = do
     it "should go upLeft" $ do
       upLeft (C 0 0) `shouldBe` C (-1) (-1)
     it "should go up " $ do
-      left (C 0 0) `shouldBe` C 0 (-1)
+      up (C 0 0) `shouldBe` C (-1) 0
     it "should go upRight" $ do
-      upLeft (C 0 0) `shouldBe` (C (-1) 1)
+      upRight (C 0 0) `shouldBe` C (-1) 1
+    it "should go right" $ do
+      right (C 0 0) `shouldBe` C 0 1
+    it "should go downRight" $ do
+      downRight (C 0 0) `shouldBe` C 1 1
+    it "should go down" $ do
+      down (C 0 0) `shouldBe` C 1 0
+    it "should go downLeft" $ do
+      downLeft (C 0 0) `shouldBe` C 1 (-1)
