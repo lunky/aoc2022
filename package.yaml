@@ -30,6 +30,7 @@ library:
   - vector
   - text
   - containers
+  - array
 
 
 executables:
