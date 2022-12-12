@@ -6,10 +6,10 @@ import Test.Hspec
 spec :: Spec
 spec = do
   describe "Day10" $ do
-    xit "should do sample 1" $ do
-      let expected=0
+    it "should do sample 1" $ do
+      let expected=13140
       day10 _input `shouldBe` expected
   describe "Day10b" $ do
-    xit "should do sample 1" $ do
-      let expected=0
+    it "should do sample 1" $ do
+      let expected="##  ##  ##  ##  ##  ##  ##  ##  ##  ##  \n###   ###   ###   ###   ###   ###   ### \n####    ####    ####    ####    ####    \n#####     #####     #####     #####     \n######      ######      ######      ####\n#######       #######       #######     \n"
       day10b _input `shouldBe` expected
