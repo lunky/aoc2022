@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-name-shadowing -Wno-unused-do-bind #-}
+{-# LANGUAGE NumericUnderscores #-}
 module Main where
 
 import Day1
@@ -7,11 +8,11 @@ import Day3
 import Day4
 import Day5
 import Day6
--- import Day7
--- import Day8
--- import Day9
--- import Day10
--- import Day11
+import Day7
+import Day8
+import Day9
+import Day10
+import Day11
 -- import Day13
 import Data.Time
 
@@ -66,35 +67,35 @@ runDays = do
     let answer = show $ day6b contents
     putStrLn ("day6b: " ++ answer)
 
-    -- contents <- readFile "data/day7.txt"
-    -- let answer = show $ day7 contents
-    -- putStrLn ("day7: " ++ answer)
-    -- let answer = show $ day7b contents
-    -- putStrLn ("day7b: " ++ answer)
+    contents <- readFile "data/day7.txt"
+    let answer = show $ day7 contents
+    putStrLn ("day7: " ++ answer)
+    let answer = show $ day7b contents
+    putStrLn ("day7b: " ++ answer)
 
-    -- contents <- readFile "data/day8.txt"
-    -- let answer = show $ day8 contents
-    -- putStrLn ("day8: " ++ answer)
-    -- let answer = show $ day8b contents
-    -- putStrLn ("day8b: " ++ answer)
+    contents <- readFile "data/day8.txt"
+    let answer = show $ day8 contents
+    putStrLn ("day8: " ++ answer)
+    let answer = show $ day8b contents
+    putStrLn ("day8b: " ++ answer)
 
-    -- contents <- readFile "data/day9.txt"
-    -- let answer = show $ day9 contents
-    -- putStrLn ("day9: " ++ answer)
-    -- let answer = show $ day9b contents
-    -- putStrLn ("day9b: " ++ answer)
+    contents <- readFile "data/day9.txt"
+    let answer = show $ day9 contents
+    putStrLn ("day9: " ++ answer)
+    let answer = show $ day9b contents
+    putStrLn ("day9b: " ++ answer)
 
-    -- contents <- readFile "data/day10.txt"
-    -- let answer = show $ day10 contents
-    -- putStrLn ("day10: " ++ answer)
-    -- let answer = show $ day10b contents
-    -- putStrLn ("day10b: " ++ answer)
+    contents <- readFile "data/day10.txt"
+    let answer = show $ day10 contents
+    putStrLn ("day10: " ++ answer)
+    let answer = day10b contents
+    putStrLn ("day10b: \n" ++ answer)
 
-    -- contents <- readFile "data/day11.txt"
-    -- let answer = show $ day11 contents
-    -- putStrLn ("day11: " ++ answer)
-    -- let answer = show $ day11b contents
-    -- putStrLn ("day11b: " ++ answer)
+    contents <- readFile "data/day11.txt"
+    let answer = show $ day11 contents
+    putStrLn ("day11: " ++ answer)
+    let answer = show $ day11b contents 10_000
+    putStrLn ("day11b: " ++ answer)
 
     -- contents <- readFile "data/day13.txt"
     -- let answer = show $ day13 contents
