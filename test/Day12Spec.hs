@@ -10,6 +10,6 @@ spec = do
       let expected=31
       day12 _input `shouldBe` expected
   describe "Day12b" $ do
-    xit "should do sample 1" $ do
-      let expected=0
+    it "should do sample 1" $ do
+      let expected=29
       day12b _input `shouldBe` expected

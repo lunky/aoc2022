@@ -1,4 +1,4 @@
-{-# Language FlexibleContexts, ImportQualifiedPost, UnboxedTuples, MagicHash, MultiParamTypeClasses, DeriveDataTypeable, DeriveGeneric, TypeFamilies, TypeOperators, BlockArguments #-}
+{-# Language TupleSections #-}
 module Day12
     ( 
     day12
@@ -6,75 +6,102 @@ module Day12
    ,_input
     )
     where
-import Data.Char (digitToInt, ord)
-import Data.List (unfoldr)
-import Data.Array.Base 
-import Data.Array.IArray
-import Data.Map (Map)
-import qualified Data.Map as M
 
-data Coord = C !Int !Int
-  deriving (Read, Show, Ord, Eq)
+import Data.Array
+import Prelude hiding (Right, Left)
+import Data.Sequence (viewl, ViewL (..), (><))
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
+import Data.Tree
+import Data.Char (ord)
+import Data.Maybe (catMaybes, fromJust)
 
-type Grid = UArray Coord Char 
+type Board = Array (Int, Int) Char
+type Coord = (Int,Int)
 
-above :: Coord -> Coord
-above (C y x) = C (y-1) x
 
-below :: Coord -> Coord
-below (C y x) = C (y+1) x
+parseInput :: String -> Board
+parseInput input = listArray ((0,0), (length xs -1, length (head xs) - 1 )) (concat xs)
+  where xs = lines input
 
-left :: Coord -> Coord
-left  (C y x) = C y (x-1)
-
-right :: Coord -> Coord
-right (C y x) = C y (x+1)
-
-around :: Grid -> Coord -> [Coord]
-around a c = filter inside $ map (\y-> y c) [above,below,left,right]
+around :: Board -> Coord -> [Coord]
+around a c = filter inside $ map (\y-> y c) [above,below,left,right] 
   where inside x = inRange (bounds a) x
 
-valid :: Grid -> Coord -> [Coord]
-valid a c = filter (\y-> y==end || greater a y c) $ around a c
-  where end = findEnd a
+above :: Coord -> Coord
+above (y,x) = (y-1,x)
 
+below :: Coord -> Coord
+below (y,x) = (y+1,x)
 
+left :: Coord -> Coord
+left (y,x) = (y,x-1)
 
+right :: Coord -> Coord
+right (y,x) = (y,x+1)
+
+explore :: Coord -> Board -> Tree (Coord, Char)
+explore start a = go start Set.empty
+  where go c s = Node (c,a!c) (map (\y-> go y (Set.insert y s)) 
+                  $ filter (`Set.notMember` s) $ valid a c)
+
+breadthFirstSearchUnseen:: Ord r => (a -> r) -> (a -> Bool) -> [Tree a] -> Maybe [a]
+breadthFirstSearchUnseen repr p = combine Set.empty Seq.empty []
+    where
+        combine seen queued ancestors unseen =
+            go
+                (seen  `Set.union` (Set.fromList . map (repr . rootLabel) $ unseen))
+                (queued ><         (Seq.fromList . map (ancestors,) $ unseen))
+        go seen queue =
+            case viewl queue of
+                EmptyL -> Nothing
+                (ancestors, Node a bs) :< queued ->
+                    if p a
+                    then Just . reverse $ ancestors'
+                    else combine seen queued ancestors' $ unseen bs
+                    where
+                        ancestors' = a:ancestors
+                        unseen = filter (flip Set.notMember seen . repr . rootLabel)
+
+valid :: Board -> Coord -> [Coord]
+valid a c = filter (\y-> greater a y c) $ around a c
+
+greater :: Board -> Coord -> Coord -> Bool
+greater a c x = a!x == 'S' 
+                     || (a!c == 'E' && (a!x) == 'z')
+                     || ((ord (a!c) - ord (a!x)) <= 1 && (a!c /= 'E'))
+                     || (ord (a!c) - ord (a!x)) == 0
+
+findStart :: Board -> Coord
 findStart a = fst $ head $ filter (\(a,b)->b=='S') $ assocs a
+
+findStarts :: Board -> [Coord]
+findStarts a = map fst $ filter (\(_,b)->b=='a' || b=='S') $ filter (\((y,x),_)->x==maxx || y==maxy || x==0 || y==0) $ assocs a
+  where (_,(maxy,maxx)) = bounds a
+
+findEnd :: Board -> Coord
 findEnd a = fst $ head $ filter (\(a,b)->b=='E') $ assocs a
 
-day12' a = unfoldr next (a,M.empty,([start],[]))
-  where start = findStart a
-
-
-next (a,m,(toProcess,parents)) =  if null toProcess
-                then Nothing
-                else Just ((c,parents), (a,M.insert c c m,(found ++ tail toProcess,c:parents))) 
-  where found = filter (`M.notMember` m) $ valid a c
-        c = head toProcess
-        
-
-greater :: Grid -> Coord -> Coord -> Bool
-greater a c x = a!c == 'C'  || a!x == 'S' || (ord (a!c) - ord (a!x)) == 1
-                                          || (ord (a!c) - ord (a!x)) == 0
-
-instance Ix Coord where
-  index (C lorow locol, C hirow hicol) (C row col) = index ((lorow,locol), (hirow,hicol)) (row,col)
-  inRange (C lorow locol, C hirow hicol) (C row col) = inRange (lorow,hirow) row && inRange (locol,hicol) col
-  range (C lorow locol, C hirow hicol) = [C row col | row <- [lorow..hirow], col <- [locol..hicol]]
-
-parseInput :: String -> Grid 
-parseInput input = listArray (C 0 0, C (length xs - 1) (length (head xs) - 1)) (concat xs)
-  where xs = lines input
-    
 day12 :: String -> Int 
-day12 input =  length (M.fromList (day12' a) M.! end) - 1
+day12 input =  fromJust $ day12' input
+
+day12' :: String -> Maybe Int
+day12' input = (\y-> length y - 1) 
+     <$> breadthFirstSearchUnseen id (\y->y==(findEnd a,'E')) [explore start a]
   where a = parseInput input
-        end = findEnd a
+        start = findStart a
+
+day12b' :: String -> [Maybe Int]
+day12b' input = (\start ->  (\y-> length y - 1) <$> breadthFirstSearchUnseen id (\y->y==(findEnd a,'E')) [explore start a]) <$> findStarts a
+  where a = parseInput input
 
 day12b :: String -> Int
-day12b input = 0
+day12b input = minimum $ catMaybes $ day12b' input
+
+_input :: String
 _input="Sabqponm\nabcryxxl\naccszExk\nacctuvwj\nabdefghi"
+
+
 
 {--
   01234567
