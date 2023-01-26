@@ -43,19 +43,6 @@ target = 1_000_000_000_000
 
 
 
--- findCycle :: Eq a => [a] -> ([a],[a])
--- findCycle xxs = fCycle xxs xxs
---   where fCycle (x:xs) (_:y:ys)
---          | x == y              = fStart xxs xs
---          | otherwise           = fCycle xs ys
---         fCycle _      _        = (xxs,[]) -- not cyclic
---         fStart (x:xs) (y:ys)
---          | x == y              = ([], x:fLength x xs)
---          | otherwise           = let (as,bs) = fStart xs ys in (x:as,bs)
---         fLength x (y:ys)
---          | x == y              = []
---          | otherwise           = y:fLength x ys
-
 getMaxY :: Set Point -> Int
 getMaxY = Set.foldr (\(_,y) acc -> max y acc) 0 
 
@@ -143,7 +130,6 @@ rock IShape (x,y) = (IShape,[ (x,  y  ),
 rock Square (x,y) = (Square,[ (x,  y  ),(x+1,  y),
                               (x,  y-1),(x+1,  y-1)])
 
-
 down :: Point -> Point
 down (x,y) = (x, y-1)
 
@@ -153,13 +139,13 @@ left (x,y) = (x-1, y)
 right:: Point -> Point
 right (x,y) = (x+1, y)
 
+-- these are helper methods, just good for visualizing the data
 _mapSet ((_,next), s, m) = do  
               chunksOf 7 [ if Set.member (x,y) s then '#' else '.' 
                                   | y <- [1..maxY], x <- [1..7]]
       where maxY = maximum ys
             l = Set.toList s
             ys = map snd l
-
 
 _showSet :: (RockCoords, Set Point, [Move]) -> IO()
 _showSet ((_,next), s, m) = do  
@@ -176,3 +162,21 @@ _showSet ((_,next), s, m) = do
 _removeFloor (_,s,_) = Set.filter (\(a,b)->b/=0) s
 
 _input=">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
+
+-----------------------------------------------------------
+-- todo: figure out how to make this findCycle work with the dataset
+-- figure out a function that will find the cycle in the data
+-----------------------------------------------------------
+-- findCycle :: Eq a => [a] -> ([a],[a])
+-- findCycle xxs = fCycle xxs xxs
+--   where fCycle (x:xs) (_:y:ys)
+--          | x == y              = fStart xxs xs
+--          | otherwise           = fCycle xs ys
+--         fCycle _      _        = (xxs,[]) -- not cyclic
+--         fStart (x:xs) (y:ys)
+--          | x == y              = ([], x:fLength x xs)
+--          | otherwise           = let (as,bs) = fStart xs ys in (x:as,bs)
+--         fLength x (y:ys)
+--          | x == y              = []
+--          | otherwise           = y:fLength x ys
+

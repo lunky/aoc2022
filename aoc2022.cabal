@@ -33,6 +33,9 @@ library
       Day13
       Day14
       Day15
+      Day16
+      Day17
+      Day18
       Day2
       Day3
       Day4
@@ -76,6 +79,9 @@ test-suite aoc2022-test
       Day13Spec
       Day14Spec
       Day15Spec
+      Day16Spec
+      Day17Spec
+      Day18Spec
       Day1Spec
       Day2Spec
       Day3Spec
