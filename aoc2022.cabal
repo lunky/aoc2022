@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -36,7 +36,10 @@ library
       Day16
       Day17
       Day18
+      Day19
       Day2
+      Day20
+      Day21
       Day3
       Day4
       Day5
@@ -82,7 +85,10 @@ test-suite aoc2022-test
       Day16Spec
       Day17Spec
       Day18Spec
+      Day19Spec
       Day1Spec
+      Day20Spec
+      Day21Spec
       Day2Spec
       Day3Spec
       Day4Spec
